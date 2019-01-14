@@ -40,5 +40,18 @@ server.get(`${url}:id`, async(req, res) => {
     }
 });
 
+server.get(`${url}actions/:projectId`, async(req, res) => {
+    const { projectId } = req.params;
+    try{
+        const projectActions = await projects.getProjectActions(projectId)
+        if(projectActions.length === 0) {
+            res.status(404).json(`{error: 'sorry wrong project ID'}`)
+        } else {
+            res.status(200).json(projectActions)
+        }
+    } catch(err) {
+        res.status(500).json(`{error: 'Those actions could not be found'}`)
+    }
+})
 module.exports = server
 
