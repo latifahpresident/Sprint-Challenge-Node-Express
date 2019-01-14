@@ -15,7 +15,7 @@ server.use(cors());
 server.use(express.json());
 
 const url = '/api/projects/';
-const actionsurl = '/api/actions';
+const actionsurl = '/api/actions/';
 
 server.get(url, async(req, res) => {
     try{
@@ -85,6 +85,32 @@ server.put(`${url}:id`, async(req, res) => {
         }
     } catch(err) {
         res.status(500).json(`{error: 'Sorry something went wrong'}`)
+    }
+});
+
+server.delete(`${url}:id`, async(req, res) => {
+    const { id } = req.params;
+    projects.get(id)
+    try{
+        const user = await projects.remove(req.params.id)
+        if(user){
+            res.status(204).json(user)
+        } else {
+            res.status(404).json(`{error: 'Project with that id not found'}`)
+        }
+    } catch(err) {
+        res.status(500).json(`{error: 'Sorry something went wrong'}`)
+    }
+});
+
+//==========ACTIONS=============//
+
+server.get(actionsurl, async(req, res) => {
+    try{
+        const actionsData = await actions.get()
+        res.status(200).json(actionsData)
+    }catch(err){
+        res.status(500).json(`{error: 'could not retrieve that route'}`)
     }
 });
 module.exports = server
