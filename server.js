@@ -144,6 +144,37 @@ server.post(`${actionsurl}`, async(req, res) => {
     }
 });
 
+server.put(`${actionsurl}:id`, async(req, res) => {
+    const { id } = req.params;
+    const data = req.body;
+    const { project_id, description } = req.body;
+    try {
+        const results = await actions.update(id, data)
+        if(!project_id || !description) {
+            res.status(404).json(`{error: 'Sorry, but the project id and description are required'}`)
+        } else if(description.length > 128) {
+            res.status(404).json(`{error: 'Sorry that description is tooooooo looooonnnng'}`)
+        } else {
+            res.status(200).json(results)
+        }
+    } catch(err) {
+        res.status(500).json(`{error: 'Sorry something went wrong'}`)
+    }
+});
 
+server.delete(`${actionsurl}:id`, async(req, res) => {
+    const { id } = req.params;
+    actions.get(id)
+    try{
+        const user = await actions.remove(req.params.id)
+        if(user){
+            res.status(204).json(user)
+        } else {
+            res.status(404).json(`{error: 'actions with that id not found'}`)
+        }
+    } catch(err) {
+        res.status(500).json(`{error: 'Sorry something went wrong'}`)
+    }
+});
 module.exports = server
 
