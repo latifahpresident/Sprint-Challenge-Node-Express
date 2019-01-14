@@ -117,7 +117,7 @@ server.get(actionsurl, async(req, res) => {
 server.get(`${actionsurl}:id`, async(req, res) => {
     const { id } = req.params;
     try{
-        const actionsData = await projects.get(id)
+        const actionsData = await actions.get(id)
         if(actionsData.length === 0) {
             res.status(404).json(`{error: 'that action cannot be found'}`)
         } else {
@@ -127,5 +127,23 @@ server.get(`${actionsurl}:id`, async(req, res) => {
         res.status(500).json(`{error: 'action  could not be found'}`)
     }
 });
+
+server.post(`${actionsurl}`, async(req, res) => {
+    const { project_id, description, notes } = req.body;
+    try{
+        if(!project_id || !description || !notes ){
+            res.status(404).json(`{error: 'Please enter notes and description'}`)
+        } else if (description.length > 128) {
+            res.status(404).json(`{error: 'Sorry that description is tooooooo looooonnnng'}`)
+        } else {
+            const data = await actions.insert({project_id, description, notes})
+            res.status(200).json(data)
+        }
+    } catch(err) {
+        res.status(500).json(`{error: 'Bad request: Information not found'}`)
+    }
+});
+
+
 module.exports = server
 
