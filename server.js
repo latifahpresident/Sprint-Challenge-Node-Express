@@ -52,6 +52,22 @@ server.get(`${url}actions/:projectId`, async(req, res) => {
     } catch(err) {
         res.status(500).json(`{error: 'Those actions could not be found'}`)
     }
-})
+});
+
+server.post(`${url}`, async(req, res) => {
+    const { name, description } = req.body;
+    try{
+        if(!name || !description){
+            res.status(404).json(`{error: 'Please enter name and description'}`)
+        } else if (name.length > 128) {
+            res.status(404).json(`{error: 'Sorry that name is tooooooo looooonnnng'}`)
+        } else {
+            const data = await projects.insert({name, description})
+            res.status(200).json(data)
+        }
+    } catch(err) {
+        res.status(500).json(`{error: 'Bad request: Information not found'}`)
+    }
+});
 module.exports = server
 
