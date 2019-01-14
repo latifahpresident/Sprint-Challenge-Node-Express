@@ -69,5 +69,23 @@ server.post(`${url}`, async(req, res) => {
         res.status(500).json(`{error: 'Bad request: Information not found'}`)
     }
 });
+
+server.put(`${url}:id`, async(req, res) => {
+    const { id } = req.params;
+    const data = req.body;
+    const { name, description } = req.body;
+    try {
+        const results = await projects.update(id, data)
+        if(!name || !description) {
+            res.status(404).json(`{error: 'Sorry, but the name and description are required'}`)
+        } else if(name.length > 128) {
+            res.status(404).json(`{error: 'Sorry that name is tooooooo looooonnnng'}`)
+        } else {
+            res.status(200).json(results)
+        }
+    } catch(err) {
+        res.status(500).json(`{error: 'Sorry something went wrong'}`)
+    }
+});
 module.exports = server
 
