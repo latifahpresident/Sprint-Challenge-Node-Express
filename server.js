@@ -17,7 +17,14 @@ server.use(express.json());
 const url = '/api/projects/';
 const actionsurl = '/api/actions';
 
-
+server.get(url, async(req, res) => {
+    try{
+        const projectsData = await projects.get()
+        res.status(200).json(projectsData)
+    }catch(err){
+        res.status(500).json(`{error: 'could not retrieve that route'}`)
+    }
+});
 
 module.exports = server
 
