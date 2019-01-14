@@ -113,5 +113,19 @@ server.get(actionsurl, async(req, res) => {
         res.status(500).json(`{error: 'could not retrieve that route'}`)
     }
 });
+
+server.get(`${actionsurl}:id`, async(req, res) => {
+    const { id } = req.params;
+    try{
+        const actionsData = await projects.get(id)
+        if(actionsData.length === 0) {
+            res.status(404).json(`{error: 'that action cannot be found'}`)
+        } else {
+            res.status(200).json(actionsData)
+        }
+    } catch(err){
+        res.status(500).json(`{error: 'action  could not be found'}`)
+    }
+});
 module.exports = server
 
